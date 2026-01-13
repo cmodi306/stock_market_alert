@@ -10,4 +10,4 @@ cd stock_market_alert
 fastapi dev main.py 
 ```
 
-This will create a server on your localhost. Visit [localhost:8000](localhost:8000) to use the app.
+This will create a server on your localhost. Visit [localhost:8000](localhost.com:8000) to use the app.
