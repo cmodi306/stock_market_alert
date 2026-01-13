@@ -1,7 +1,10 @@
 from fastapi import FastAPI, Request, Form
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
+from fastapi import UploadFile, File
 from services.market_data import get_stock_summary
+from services.analyze_pie import analyze_pie
+import pandas as pd
 
 app = FastAPI()
 
@@ -27,3 +30,38 @@ def analyze_stock(request: Request, symbol: str = Form(...)):
             "index.html",
             {"request": request, "error": str(e)}
         )
+
+@app.post("/pie/analyze")
+def analyze_pie_view(
+    request: Request,
+    pie_name: str = Form(...),
+    input_method: str = Form(...),
+    symbols: list[str] = Form(default=[]),
+    shares: list[int] = Form(default=[]),
+    csv_file: UploadFile = File(None),
+):
+
+    if input_method == "manual":
+        positions = []
+
+        pie = pd.DataFrame({
+            "symbols": symbols,
+            "shares": shares})
+    
+    else:
+        pie = pd.read_csv(csv_file.filename)
+        if "current_price" in pie.columns:
+            pie.columns = ["symbols", "shares", "current_price"]
+        else:
+            pie.columns = ["symbols", "shares"]
+        for idx, symbol in enumerate(pie['symbols']):
+            pie["symbols"][idx] = symbol.upper()
+    
+    pie, pie_data = analyze_pie(pie)
+    pie.to_csv('test.csv', index=False)
+    return templates.TemplateResponse(
+            "index.html",
+            {"request": request, "result": pie_data}
+        )
+    #pie = {"pie_name": pie_name, "positions" : positions}
+

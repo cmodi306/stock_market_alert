@@ -18,6 +18,3 @@ def get_stock_summary(symbol:str):
             "highest_price_30d_date": highest_price_30d_date,
             "gain_loss_ratio": gain_loss_ratio
         }
-
-data = get_stock_summary("VUSA.DE")
-print(data)
