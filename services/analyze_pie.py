@@ -15,7 +15,7 @@ def analyze_pie(pie: pd.DataFrame):
         current_value = stock_data["current_price"] * share
         high_value = stock_data["highest_price_30d"] * share
 
-        pie_current_total_value += current_value
+        pie_current_total_value += round(float(current_value), 3)
         
         breakdown.append({
             "symbol": symbol,
