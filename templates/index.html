@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Market Watch</title>
+</head>
+<body>
+    <h1>Stock Analyzer</h1>
+
+    <form method="post" action="/analyze">
+        <input name="symbol" placeholder="AAPL" required />
+        <button type="submit">Analyze</button>
+    </form>
+
+    {% if data %}
+        <h2>{{ data.symbol }}</h2>
+        <ul>
+            <li>Current Price: {{ data.current_price }}</li>
+            <li>30D High: {{ data.highest_price_30d }}</li>
+            <li>Date of 30D High: {{ data.highest_price_30d_date }}</li>
+            <li>From High (%): {{ data.gain_loss_ratio }}%</li>
+        </ul>
+    {% endif %}
+
+    {% if error %}
+        <p style="color:red;">{{ error }}</p>
+    {% endif %}
+</body>
+</html>
