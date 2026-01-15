@@ -78,8 +78,8 @@
 {% if result %}
     <h2>{{ result.pie_name }}</h2>
     <p>Total Value: {{ result.total_current }}</p>
-    <p>30D High Value: {{ result.total_high_30d }}</p>
-    <p>From High (%): {{ result.pct_from_high }}%</p>
+    <p>30D High Value: {{ result.mean_normalized_highest_price_30d }}</p>
+    <p>Deviation from High (%): {{ result.deviation_from_high }}%</p>
 
     <h3>Breakdown</h3>
     <ul>

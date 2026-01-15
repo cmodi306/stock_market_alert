@@ -50,8 +50,8 @@ def analyze_pie_view(
     
     else:
         pie = pd.read_csv(csv_file.filename)
-        if "current_price" in pie.columns:
-            pie.columns = ["symbols", "shares", "current_price"]
+        if "current_price" and "normalized_highest_price_30d_list" in pie.columns:
+            pie.columns = ["symbols", "shares", "current_price", "normalized_highest_price_30d_list"]
         else:
             pie.columns = ["symbols", "shares"]
         for idx, symbol in enumerate(pie['symbols']):
@@ -63,5 +63,4 @@ def analyze_pie_view(
             "index.html",
             {"request": request, "result": pie_data}
         )
-    #pie = {"pie_name": pie_name, "positions" : positions}
 

@@ -4,7 +4,7 @@ import requests
 
 def get_stock_summary(symbol:str):
     if yf.Ticker(symbol).history('30d').empty:
-        raise ValueError("Symbol Error. Please look up for the correct symbol on https://finance.yahoo.com")
+        raise ValueError(f"Invalid {symbol}. Please look up for the correct symbol on https://finance.yahoo.com")
     else:
         current_price = round(yf.Ticker(symbol).fast_info['lastPrice'], 3)
         stock_price_history_30d  = round(yf.Ticker(symbol).history('30d'), 3)
