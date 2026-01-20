@@ -58,7 +58,7 @@ def analyze_pie_view(
             pie["symbols"][idx] = symbol.upper()
     
     pie, pie_data = analyze_pie(pie)
-    pie.to_csv('test.csv', index=False)
+    pie.to_csv(f'{pie_name}.csv', index=False)
     return templates.TemplateResponse(
             "index.html",
             {"request": request, "result": pie_data}
