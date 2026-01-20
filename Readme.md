@@ -45,6 +45,7 @@ After analysis, a processed CSV is saved containing:
 ```
 git clone https://github.com/cmodi306/stock_market_alert.git
 cd stock_market_alert
+pip install -r requirements.txt
 fastapi dev main.py 
 ```
 
