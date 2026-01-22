@@ -1,112 +1,212 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Market Watch</title>
+    <style>
+        body {
+            font-family: Inter, Arial, sans-serif;
+            background: #f4f6f9;
+            margin: 0;
+            padding: 40px;
+            color: #1f2937;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        h2 {
+            margin-top: 0;
+        }
+
+        .card {
+            background: #fff;
+            padding: 24px;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+        }
+
+        label {
+            font-weight: 600;
+        }
+
+        input, button {
+            padding: 10px 12px;
+            border-radius: 6px;
+            border: 1px solid #d1d5db;
+            font-size: 14px;
+        }
+
+        input {
+            width: 100%;
+        }
+
+        button {
+            background: #2563eb;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        .row {
+            display: flex;
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .row input {
+            flex: 1;
+        }
+
+        .inline {
+            display: flex;
+            gap: 20px;
+            margin-top: 12px;
+        }
+
+        .position {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .position button {
+            background: #ef4444;
+        }
+
+        .position button:hover {
+            background: #dc2626;
+        }
+
+        ul {
+            padding-left: 20px;
+        }
+
+        .error {
+            color: #dc2626;
+            font-weight: 600;
+        }
+
+        .muted {
+            color: #6b7280;
+            font-size: 13px;
+        }
+    </style>
 </head>
 <body>
 
-<h1>Stock Analyzer</h1>
+<div class="container">
 
-<h2>Analyzer Single Symbol</h2>
+    <h1>📈 Market Watch</h1>
 
-<form method="post" action="/analyze">
-    <input name="symbol" placeholder="AAPL" required>
-    <button type="submit">Analyze</button>
-</form>
+    <!-- SINGLE ANALYZER -->
+    <div class="card">
+        <h2>Stock Analyzer</h2>
 
-{% if data %}
-    <h3>{{ data.symbol }}</h3>
-    <ul>
-        <li>Current Price: {{ data.current_price }}</li>
-        <li>30D High: {{ data.highest_price_30d }}</li>
-        <li>Date of 30D High: {{ data.highest_price_30d_date }}</li>
-        <li>From High (%): {{ data.gain_loss_ratio }}%</li>
-    </ul>
-{% endif %}
+        <form method="post" action="/analyze" class="row">
+            <input name="symbol" placeholder="AAPL" required>
+            <button type="submit">Analyze</button>
+        </form>
 
-{% if error %}
-    <p style="color:red;">{{ error }}</p>
-{% endif %}
+        {% if data %}
+            <h3>{{ data.symbol }}</h3>
+            <ul>
+                <li>Current Price: {{ data.current_price }}</li>
+                <li>30D High: {{ data.highest_price_30d }}</li>
+                <li>Date of 30D High: {{ data.highest_price_30d_date }}</li>
+                <li>From High (%): {{ data.gain_loss_ratio }}%</li>
+            </ul>
+        {% endif %}
 
-<br>
-<hr>
+        {% if error %}
+            <p class="error">{{ error }}</p>
+        {% endif %}
+    </div>
+    <style>
+    p{text-align: center;}
+    </style>
+    <b><p style="font-size: 30px;">OR</p></b>
 
-<h2>Create / Upload Pie</h2>
+    <!-- PIE ANALYZER -->
+    <div class="card">
+        <h2>Create / Upload Pie</h2>
 
-<form method="post" action="/pie/analyze" enctype="multipart/form-data">
+        <form method="post" action="/pie/analyze" enctype="multipart/form-data">
 
-    <input name="pie_name" placeholder="My Pie" required>
+            <input name="pie_name" placeholder="My Pie" required>
 
-    <h3>Input Method</h3>
-
-    <label>
-        <input type="radio" name="input_method" value="manual" checked onclick="toggleInput('manual')">
-        Manual entry
-    </label>
-
-    <label>
-        <input type="radio" name="input_method" value="csv" checked onclick="toggleInput('csv')">
-        Upload CSV
-    </label>
-
-    <!-- MANUAL INPUT -->
-    <div id="manual-input">
-        <h3>Positions</h3>
-
-        <div id="positions">
-            <div class="position">
-                <input name="symbols" placeholder="AAPL" required>
-                <input name="shares" type="number" step="1" min="1" placeholder="10" required>
+            <div class="inline">
+                <label>
+                    <input type="radio" name="input_method" value="manual" checked onclick="toggleInput('manual')">
+                    Manual
+                </label>
+                <label>
+                    <input type="radio" name="input_method" value="csv" onclick="toggleInput('csv')">
+                    CSV
+                </label>
             </div>
-        </div>
 
-        <br>
-        <button type="button" onclick="addPosition()">Add stock</button>
+            <!-- MANUAL INPUT -->
+            <div id="manual-input">
+                <h3>Positions</h3>
+                <div id="positions">
+                    <div class="position">
+                        <input name="symbols" placeholder="AAPL" required>
+                        <input name="shares" type="number" min="1" placeholder="10" required>
+                    </div>
+                </div>
+                <button type="button" onclick="addPosition()" style="margin-top:10px;">+ Add stock</button>
+            </div>
+
+            <!-- CSV INPUT -->
+            <div id="csv-input" style="display:none;">
+                <h3>Upload CSV</h3>
+                <input type="file" name="csv_file" accept=".csv">
+                <p class="muted">Format: symbol,shares</p>
+            </div>
+
+            <br>
+            <button type="submit">Analyze Pie</button>
+        </form>
+
+        {% if result %}
+            <hr>
+            <h3>{{ result.pie_name }}</h3>
+            <p>Total Value: {{ result.total_current }}</p>
+            <p>Deviation from 30D High: {{ result.deviation_from_high }}%</p>
+
+            <ul>
+                {% for row in result.breakdown %}
+                    <li>{{ row.symbol }} — {{ row.shares }} shares ({{ row.current_value }})</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
     </div>
 
-    <!-- CSV INPUT -->
-    <div id="csv-input" style="display:none;">
-        <h3>Upload CSV</h3>
-        <input type="file" name="csv_file" accept=".csv">
-        <p>Format: <code>symbol,shares</code></p>
-    </div>
-
-    <br>
-    <button type="submit">Analyze Pie</button>
-</form>
-
-{% if result %}
-    <h2>{{ result.pie_name }}</h2>
-    <p>Total Value: {{ result.total_current }}</p>
-    <p>30D High Value: {{ result.mean_normalized_highest_price_30d }}</p>
-    <p>Deviation from High (%): {{ result.deviation_from_high }}%</p>
-
-    <h3>Breakdown</h3>
-    <ul>
-        {% for row in result.breakdown %}
-            <li>
-                {{ row.symbol }} —
-                Shares: {{ row.shares }},
-                Value: {{ row.current_value }}
-            </li>
-        {% endfor %}
-    </ul>
-{% endif %}
+</div>
 
 <script>
 function addPosition() {
     const container = document.getElementById("positions");
-
     const div = document.createElement("div");
     div.className = "position";
-
     div.innerHTML = `
-        <br>
         <input name="symbols" placeholder="AAPL" required>
-        <input name="shares" type="number" step="1" min="1" placeholder="10" required>
+        <input name="shares" type="number" min="1" placeholder="10" required>
         <button type="button" onclick="this.parentElement.remove()">✕</button>
     `;
-
     container.appendChild(div);
 }
 
@@ -117,17 +217,14 @@ function toggleInput(mode) {
     manual.style.display = mode === "manual" ? "block" : "none";
     csv.style.display = mode === "csv" ? "block" : "none";
 
-    // Disable manual inputs when CSV selected
-    manual.querySelectorAll("input").forEach(input => {
-        input.disabled = (mode !== "manual");
+    manual.querySelectorAll("input").forEach(i => {
+        i.disabled = (mode !== "manual");
     });
 
-    // Disable CSV inputs when manual selected
-    csv.querySelectorAll("input").forEach(input => {
-        input.disabled = (mode !== "csv");
+    csv.querySelectorAll("input").forEach(i => {
+        i.disabled = (mode !== "csv");
     });
 }
-
 </script>
 
 </body>

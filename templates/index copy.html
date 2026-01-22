@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Market Watch</title>
+</head>
+<body>
+
+<h1>Stock Analyzer</h1>
+
+<h2>Analyzer Single Symbol</h2>
+
+<form method="post" action="/analyze">
+    <input name="symbol" placeholder="AAPL" required>
+    <button type="submit">Analyze</button>
+</form>
+
+{% if data %}
+    <h3>{{ data.symbol }}</h3>
+    <ul>
+        <li>Current Price: {{ data.current_price }}</li>
+        <li>30D High: {{ data.highest_price_30d }}</li>
+        <li>Date of 30D High: {{ data.highest_price_30d_date }}</li>
+        <li>From High (%): {{ data.gain_loss_ratio }}%</li>
+    </ul>
+{% endif %}
+
+{% if error %}
+    <p style="color:red;">{{ error }}</p>
+{% endif %}
+
+<br>
+<hr>
+
+<h2>Create / Upload Pie</h2>
+
+<form method="post" action="/pie/analyze" enctype="multipart/form-data">
+
+    <input name="pie_name" placeholder="My Pie" required>
+
+    <h3>Input Method</h3>
+
+    <label>
+        <input type="radio" name="input_method" value="manual" checked onclick="toggleInput('manual')">
+        Manual entry
+    </label>
+
+    <label>
+        <input type="radio" name="input_method" value="csv" checked onclick="toggleInput('csv')">
+        Upload CSV
+    </label>
+
+    <!-- MANUAL INPUT -->
+    <div id="manual-input">
+        <h3>Positions</h3>
+
+        <div id="positions">
+            <div class="position">
+                <input name="symbols" placeholder="AAPL" required>
+                <input name="shares" type="number" step="1" min="1" placeholder="10" required>
+            </div>
+        </div>
+
+        <br>
+        <button type="button" onclick="addPosition()">Add stock</button>
+    </div>
+
+    <!-- CSV INPUT -->
+    <div id="csv-input" style="display:none;">
+        <h3>Upload CSV</h3>
+        <input type="file" name="csv_file" accept=".csv">
+        <p>Format: <code>symbol,shares</code></p>
+    </div>
+
+    <br>
+    <button type="submit">Analyze Pie</button>
+</form>
+
+{% if result %}
+    <h2>{{ result.pie_name }}</h2>
+    <p>Total Value: {{ result.total_current }}</p>
+    <p>30D High Value: {{ result.mean_normalized_highest_price_30d }}</p>
+    <p>Deviation from High (%): {{ result.deviation_from_high }}%</p>
+
+    <h3>Breakdown</h3>
+    <ul>
+        {% for row in result.breakdown %}
+            <li>
+                {{ row.symbol }} —
+                Shares: {{ row.shares }},
+                Value: {{ row.current_value }}
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+<script>
+function addPosition() {
+    const container = document.getElementById("positions");
+
+    const div = document.createElement("div");
+    div.className = "position";
+
+    div.innerHTML = `
+        <br>
+        <input name="symbols" placeholder="AAPL" required>
+        <input name="shares" type="number" step="1" min="1" placeholder="10" required>
+        <button type="button" onclick="this.parentElement.remove()">✕</button>
+    `;
+
+    container.appendChild(div);
+}
+
+function toggleInput(mode) {
+    const manual = document.getElementById("manual-input");
+    const csv = document.getElementById("csv-input");
+
+    manual.style.display = mode === "manual" ? "block" : "none";
+    csv.style.display = mode === "csv" ? "block" : "none";
+
+    // Disable manual inputs when CSV selected
+    manual.querySelectorAll("input").forEach(input => {
+        input.disabled = (mode !== "manual");
+    });
+
+    // Disable CSV inputs when manual selected
+    csv.querySelectorAll("input").forEach(input => {
+        input.disabled = (mode !== "csv");
+    });
+}
+
+</script>
+
+</body>
+</html>
