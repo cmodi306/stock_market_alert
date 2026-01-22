@@ -4,6 +4,8 @@ A FastAPI-based web application that evaluates how far the current price of indi
 
 Upload a CSV of your portfolio or enter stock positions manually, and the app will calculate the deviation from recent highs using real-time data fetched through the Yahoo Finance (yfinance) API.
 
+![Preview of the app](preview.png)
+
 ## Features
 ### Stock-Level Analysis
 
